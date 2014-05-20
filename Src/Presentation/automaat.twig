@@ -170,12 +170,15 @@ Frisdrankautomaat
 
 
         //ajax call voor gegevens nu enkel nog munten en dranken
-        var dataResult = $.getJSON("ajaxcalls.php", {}, function(result) {
+        $.getJSON("ajaxcalls.php", {}, function(result) {
 
             //referentie naar saldo
-            var $saldo = result['saldo'];
+            var saldo = result['saldo'];
 
-            //console.log(result)
+            console.log(result['saldo']['munten'])
+            for (var prop in result) {
+                console.log("propnaam" + prop + "\n" + $(this)[prop]);
+            }
             //opbouw weergave van munten
             for (var i in result['munten']) {
                 // console.log(result['munten'][i])
@@ -191,24 +194,23 @@ Frisdrankautomaat
                 $a.append($div).insertBefore($('.muntenholder label'));
             }
 
-        /*    //opbouw voor dranken in drankautomaat
-            for (var i in result['dranken']) {
-                var $area = $('<area>')
-                $area.attr('title', result['dranken'][i].type).attr('shape', "rect").attr('coords', result['dranken'][i].coords).attr('href', "automaatcontroller.php?action=kopen&id=" + result['dranken'][i].id + "&prijs=" + result['dranken'][i].prijs + "&type=" + result['dranken'][i].type).appendTo($('map'));
-            }
-            $('#automaat').on('click', 'area', function(e) {
-                e.preventDefault();
-                //ajaxcall
-            })*/
+            /*    //opbouw voor dranken in drankautomaat
+             for (var i in result['dranken']) {
+             var $area = $('<area>')
+             $area.attr('title', result['dranken'][i].type).attr('shape', "rect").attr('coords', result['dranken'][i].coords).attr('href', "automaatcontroller.php?action=kopen&id=" + result['dranken'][i].id + "&prijs=" + result['dranken'][i].prijs + "&type=" + result['dranken'][i].type).appendTo($('map'));
+             }
+             $('#automaat').on('click', 'area', function(e) {
+             e.preventDefault();
+             //ajaxcall
+             })*/
             $('.muntenholder').on('click', 'a', function(e) {
-        alert(1);        
-        
-        e.preventDefault();
-               // console.log(e.target.id)
-               
+
+                e.preventDefault();
+                console.log(e.target.id)
+
 //ajaxcall
 
-                $.getJSON("ajaxcalls.php", "id="+e.target.id,function(result) {
+                $.getJSON("ajaxcalls.php", "id=" + e.target.id, function(result) {
                     //saldo vermeerderen waar id overeenkomt
                     console.log(result);
                 })
