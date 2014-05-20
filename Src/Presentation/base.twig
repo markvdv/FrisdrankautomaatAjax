@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+    <head>
+
+        <title>
+            {%block title%}
+            BASE
+            {%endblock%}
+        </title>
+        {%block styles%}
+        <style>
+           /* *{
+                outline:red solid 1px;
+            }*/
+            
+            pre{
+                color:white;
+                font-weight:bolder;
+            }
+        </style>
+        <link rel="stylesheet" href="Src/Presentation/css/styles.css"/>
+        {%endblock%}
+    </head>
+    <body>
+        <pre>TO DO:
+*admin css
+        </pre>
+        <header>
+        {%block header%}
+            HEADER
+        {%endblock%}
+        </header>
+        <div class=" container">
+        {%block content%}
+            BaseContent
+        {%endblock%}
+        </div>
+        {%block scripts%}
+        {%endblock%}
+        <footer>
+        {%block footer%}
+            <div class= "container">Project tijdens de VDAB opleiding PHP ontwikkelaar.<br> Gemaakt door Mark Van Der Veken in 2014
+                met PHP, CSS3, HTML5, jQuery</div>
+        {%endblock%}
+        </footer>
+    </body>
+</html>
+{# empty Twig template #}

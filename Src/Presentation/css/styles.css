@@ -1,0 +1,275 @@
+/* RESET */
+html, body, div, h1, h2, h3, h4, h5, h6, ul, ol, dl, li, dt, dd, p, blockquote, pre, form, fieldset, table, th, td, tbody { margin: 0; padding: 0; } 
+body{font-size:100%;}
+ul{list-style:none;}
+/* Einde RESET */
+/* KLEUR<editor-fold defaultstate="collapsed" desc="KLEUR">*/
+body{
+    background-color:brown;
+}
+header,footer{
+    /* IE10 Consumer Preview */ 
+    background-image: -ms-linear-gradient(bottom, #FFFFFF 0%, #A5A195 100%);
+
+    /* Mozilla Firefox */ 
+    background-image: -moz-linear-gradient(bottom, #FFFFFF 0%, #A5A195 100%);
+
+    /* Opera */ 
+    background-image: -o-linear-gradient(bottom, #FFFFFF 0%, #A5A195 100%);
+
+    /* Webkit (Safari/Chrome 10) */ 
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #FFFFFF), color-stop(1, #A5A195));
+
+    /* Webkit (Chrome 11+) */ 
+    background-image: -webkit-linear-gradient(bottom, #FFFFFF 0%, #A5A195 100%);
+
+    /* W3C Markup, IE10 Release Preview */ 
+    background-image: linear-gradient(to top, #FFFFFF 0%, #A5A195 100%);
+    color:#EA2421;
+}
+.portefeuille{
+    background:#cccccc;
+}
+#automaat div img{
+    background:#cccccc;
+}
+.leeg{
+    background:crimson;
+}
+#saldo{
+    color:red;
+    //color:#EA2421;
+    background:#333333;
+}
+.error {
+    background:#A52A2A;
+    color:white;
+}
+/* </editor-fold>*/
+
+
+
+/* TYPOGRAFIE<editor-fold defaultstate="collapsed" desc="TYPOGRAFIE">*/
+@font-face{
+    font-family:Digital;
+    src:url(digitalfont/ds-digi-webfont.woff);
+}
+body{
+    font-family: Calibri;
+    text-align:center;
+
+}
+#saldo{
+    font-family:Digital;
+    font-size:14px;
+    text-align:right;
+}
+.leeg{
+    font-size:10px;
+}
+/* </editor-fold>*/
+
+
+
+/* BOX_ELEMENT<editor-fold defaultstate="collapsed" desc="BOX_ELEMENT">*/
+body{
+   min-width:600px;
+}
+header{
+    margin-top:1em;
+    margin-bottom: 1em;
+}
+footer{
+    clear:both;
+    padding:0.5em;
+}
+header,footer{
+    border:5px outset whitesmoke;
+}
+.container{
+    width:600px;
+    margin:0 auto;
+}
+/*automaat*/
+#automaat{
+    margin:0 auto;
+    margin-left:-5px;
+    width:100%;
+    float:left;
+}
+#automaat div{
+    width:100%;
+}
+#automaat div img{
+    border:5px inset whitesmoke;
+}
+
+/*muntenholder*/
+.portefeuille{
+    position:relative;
+    bottom:75px;
+    width:12em;
+    overflow:visible;
+    padding:1em;
+    border-radius:30px ;
+    border:3px inset whitesmoke;
+    margin:0 auto;
+    clear:both;
+    background:url(../../../img/wallet.png) no-repeat -4px 5px;
+    background-size:105%;
+    background-color:whitesmoke;
+}
+.muntenholder{
+    margin:0 auto;
+    position:relative;
+    margin-top:5px;
+}
+.muntenholder label{
+    display:block;
+    clear:both;
+}
+.muntdiv{
+    width:4em;
+    position:relative;
+    margin-right:-2em;
+    float:left;
+    //onhover ze eruit late kome
+    z-index:9;
+}
+.muntdiv:hover{
+    margin-top:-1em;
+    z-index:10;
+}
+.muntimg{
+    width:100%;
+}
+
+/*leeg indicator*/
+.leeg{
+    float:left;
+    display:inline-block;
+    height:10px;
+    text-align: center;
+    font-size:0.5em;;
+    margin-bottom:2px;
+    // border-radius:90px;
+    width:100%;;
+    clear:left;
+    overflow:hidden;
+}
+.leeg:empty{
+    visibility:hidden
+}
+.leegholder{
+    position:relative;;
+    left:394px;
+    bottom:377px;
+    width:26px;
+}
+
+/*Saldo weergave*/
+#saldo{
+    position:relative;
+    bottom:408px;
+    height:15px;
+    left:98px;
+    width:30px;
+    padding:2px;
+    display:inline-block;
+    border:3px inset #666666;
+    overflow:hidden;
+}
+/* </editor-fold>*/
+
+
+/*errormessages*/
+.error {
+    font-size:70%;
+    width:160px;
+    float:left;
+    text-align:center;
+    margin:0 auto;
+    position:relative;
+    /*in pixels voor positionering*/
+    bottom:624px;
+    left:439px;
+    padding:0.03em 0;
+}
+
+
+/* HULPKLASSEN<editor-fold defaultstate="collapsed" desc="HULPKLASSEN">*/
+/* </editor-fold>*/
+
+
+
+
+
+
+
+
+
+
+
+#canimgholder{
+    position:relative;
+    bottom:390px;
+    width:2em;
+}
+.canimgholder img{
+    border:none;
+    width:100%;
+}
+label{
+    color:white;
+}
+a:active{
+    text-decoration:none;
+}
+.adminlogin{
+    color:white;
+}
+
+button,input[type=submit]{
+    color:white;
+    background:#B01B19
+}
+.adminpaneel{
+    color:white;
+}
+table{
+    border: 1px solid whitesmoke;
+    margin:0 auto;
+    text-align:center;
+    width:100px;
+    overflow:auto;
+    border-collapse: collapse;
+    margin-bottom:1em;
+}
+.adminmunten .muntdiv{
+    margin:0;
+}
+.adminmunten .muntdiv:hover{
+    margin:0;
+}
+#vendingmachine{
+    outline:none;
+}
+area{ 
+    outline:none;
+}
+.teruggave{
+    color:white;
+    position:relative;
+    bottom:675px;
+    left:200px;
+    border:5px outset whitesmoke;
+}
+.teruggave th{
+    background:whitesmoke;
+    color:#EA2421;
+}
+.teruggave tr td:first-child{
+}
+.teruggave .muntimg,   .adminmunten img{
+    width:50%;
+}

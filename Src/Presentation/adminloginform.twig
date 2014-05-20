@@ -1,0 +1,37 @@
+{%extends 'base.twig'%}
+{%block title%}
+    Admin login
+{%endblock%}
+    {% block styles %}
+ <link rel="stylesheet" href="Src/Presentation/css/styles.css"/>
+    {%endblock%}
+    {%block header%}
+        <div class="container">
+            <h1>Admin Login</h1>
+        </div>
+    {%endblock%}
+    {%block content%}
+ <form class= "adminlogin" action="adminlogin.php" method="POST"> 
+       <label for="user" >username <input id="username" name="user" type="text" placeholder="username"> </label>
+       <label for="password">password</label> <input name="password" type="password" placeholder="password"> 
+        <input name="submit" type="submit" value="submit"> 
+        </form>
+        {% if error is defined%}
+        {%if error =="usernotfound"%}
+    <p class="error" >Deze naam is niet bekend in ons systeem.</p>
+        {%elseif error=="incorrectpassword"%}
+    <p class="error">Uw wachtwoord is incorrect.</p>
+        {%endif%}
+        {%endif %}
+    {%endblock%}
+    {%block scripts%}
+    <script>
+        window.onload=function(){
+          //eerste input field referentie
+          var eUsername= document.getElementById('username');
+          eUsername.focus();
+        };
+    </script>
+    {% endblock %}
+
+

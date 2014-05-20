@@ -1,0 +1,58 @@
+{% extends 'base.twig'%}
+{%block title%}
+Admin paneel
+{%endblock%}
+{%block header%}
+<div class="container">
+    <h1>Admin Paneel</h1>
+</div>
+{%endblock%}
+    {%block styles%} <link rel="stylesheet" href="Src/Presentation/css/styles.css"/>{%endblock%}
+{% block content%}
+<div class="adminpaneel">
+    <table border="1">
+        <tr><th colspan="2"> Drankenlijst</th></tr>
+        <tr> <th>dranknaam</th><th>aantal</th></tr>
+            {% for drank in dranken%}
+        <tr>
+            <td>{{drank.type}} </td><td> {{drank.aantal}}</td>
+        </tr>
+            {%endfor%}
+    </table>
+    <table border="1" class="adminmunten">
+        <tr><th colspan="3"  >
+                Munten</th></tr>
+                {% for munt in munten%}
+        <tr>
+            <td>{{munt.aantal}}</td><td> x </td><td><img class= "muntimg" src="img/{{munt.waarde}}.png"></td>
+            
+        </tr>
+                {%endfor%}
+    </table>
+    
+    
+    
+    <div class=" clearL">
+        <a href="drankbijvullen.php">
+            <button>
+                bijvullen
+            </button>
+        </a>
+        <a href="geldophalen.php">
+            <button>
+                geldlade leegmaken
+            </button>
+        </a>
+        <a href="wisselgeldinsteken.php">
+            <button>
+                wisselgeld insteken
+            </button>
+        </a>
+        <a href="adminlogin.php?action=loguit">
+            <button>
+                Log uit
+            </button>
+        </a>
+    </div>
+</div>
+{%endblock%} 
