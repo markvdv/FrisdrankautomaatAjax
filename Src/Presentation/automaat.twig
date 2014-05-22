@@ -18,12 +18,12 @@ Frisdrankautomaat
                     {% for frisdrank in frisdranken %}
                         {%if frisdrank.aantal!=0%}
             <!-- aanwezig -->
-       {#     <!--      <area id="{{frisdrank.id}}" name="{{frisdrank.type}}" title="{{frisdrank.type}}" shape="rect" coords="{{frisdrank.coords}}" href="automaatcontroller.php?action=kopen&id={{frisdrank.id}}&prijs={{frisdrank.prijs}}&type={{frisdrank.type}}" > -->#}
+            <area id="{{frisdrank.id}}" name="{{frisdrank.type}}" title="{{frisdrank.type}}" shape="rect" coords="{{frisdrank.coords}}" href="automaatcontroller.php?action=kopen&id={{frisdrank.id}}&prijs={{frisdrank.prijs}}&type={{frisdrank.type}}" >
 
                         {%endif%}
                     {% endfor %}
-            <area shape="rect" alt="admintoegang" title="admin toegang" coords="394,93,427,133" href="adminlogin.php"/>
-            <area shape="circle" alt="geld terug" title="geld terug" coords="394,185,5" href="automaatcontroller.php?action=geldterug"/>
+            <area shape="rect" alt="admintoegang" id="admintoegang" title="admin toegang" coords="394,93,427,133" href="adminlogin.php"/>
+            <area shape="circle" alt="geld terug" id='geldterug' title="geld terug" coords="394,185,5" href="automaatcontroller.php?action=geldterug"/>
             <area shape="rect" id="ingave" alt="steek hier je geld" title="steek hier je geld" coords="410,170,430,200" href=""/>
         </map>
 
@@ -33,16 +33,12 @@ Frisdrankautomaat
 
 
 <!-- LEEG indicator -->
-<div class="leegholder"> {%for frisdrank in frisdranken%}
-    {%if frisdrank.aantal==0%}
-    <label class="leeg">LEEG</label> 
-    {%else%}
-    <label class="leeg"></label> 
-{%endif %}
-{%endfor%}</div>
+<div class="leegholder"> 
+
+</div>
 
 <!-- saldolabel -->
-<label  id="saldo">  {{(totaalsaldo/100)|number_format(2, '.', ',')}}</label>
+<label  id="saldo"> 0.00 </label>
 
 
 
@@ -63,6 +59,8 @@ Frisdrankautomaat
 
 
 <!-- errorrmsg -->
+<div id="errorholder"></div>
+
             {% if error is defined %}
                 {% if error=="drankop" %}
 <p class="error">de drank die je koos is op</p>
@@ -72,24 +70,10 @@ Frisdrankautomaat
 <p class="error">niet genoeg wisselgeld! Gepast betalen!!!</p>
                 {% endif %}
             {% endif %}
-        {% if gekozendrank is not null %}
-<div id="canimgholder" class="canimgholder" style="display:inline-block"><img src="img/{{gekozendrank}}.png"> </div>
+
+<div id="canimgholder" class="canimgholder" ></div>
 <!-- teruggave overzicht -->
-      {% if teruggave is not null %}
-<table border="1" class="teruggave">
-    <tr><th colspan="3"  >
-            Teruggave</th></tr>
-                  {% for key,aantal in teruggave %}
-    <tr>
-        <td><pre> {{aantal}} x </pre></td><td><img class= "muntimg" src="img/{{key}}.png"></td>
 
-    </tr>
-                {%endfor%}
-</table>
-    {%endif%}
-
-{%endif%}
-<div id="testdiv"></div>
         {%endblock%}
 
 {% block scripts%}
@@ -99,93 +83,21 @@ Frisdrankautomaat
 <script src="js/vendor/jquery/development-bundle/ui/jquery.ui.mouse.js"></script>
 <script src="js/vendor/jquery/development-bundle/ui/jquery.ui.draggable.js"></script>
 <script>
-    /* $(function() {
-     //<editor-fold defaultstate="collapsed" desc="Muntinteractie">
-     var bool = false;
-     var eCan = document.getElementById('canimgholder');
-     if (eCan) {
-     eCan.onclick = function() {
-     location.href = "automaatcontroller.php";
-     }
-     }
-     
-     $(".muntimg").draggable({
-     containment: "body",
-     revert: function() {
-     //of moet terugkeren naar startpositie of niet  
-     },
-     });
-     $(".muntimg").mouseup(
-     function() {
-     console.log($(this).attr('id'));
-     console.log($(this).position()['left'])
-     if ($(this).position()['top'] > -490 && $(this).position()['top'] < -450) {
-     switch ($(this).attr('id')) {
-     case '10':
-     if ($(this).position()['left'] > 170 && $(this).position()['left'] < 210) {
-     self.location.href = "automaatcontroller.php?action=steekgeldin&id=" + $(this).attr('id');
-     }
-     break;
-     case "20":
-     if ($(this).position()['left'] > 140 && $(this).position()['left'] < 180) {
-     self.location.href = "automaatcontroller.php?action=steekgeldin&id=" + $(this).attr('id');
-     }
-     break;
-     case "50":
-     if ($(this).position()['left'] > 105 && $(this).position()['left'] < 145) {
-     self.location.href = "automaatcontroller.php?action=steekgeldin&id=" + $(this).attr('id');
-     }
-     break;
-     case "100":
-     if ($(this).position()['left'] > 70 && $(this).position()['left'] < 110) {
-     self.location.href = "automaatcontroller.php?action=steekgeldin&id=" + $(this).attr('id');
-     }
-     break;
-     case "200":
-     if ($(this).position()['left'] > 40 && $(this).position()['left'] < 80) {
-     self.location.href = "automaatcontroller.php?action=steekgeldin&id=" + $(this).attr('id');
-     }
-     break;
-     
-     }
-     // alert(1)
-     }
-     }
-     
-     );
-     //</editor-fold>
-     
-     
-     });*/
-
     //jsonAJAX leverancier in servicelaag
     //met jquery, javascript leverancier aanspreken
     // en gegevens tonen
 
 
-    $(function() {
+    $(function() {//doc onload start
+        //ajax call voor gegevens van de automaat
+        applicationdata = $.getJSON("ajaxcontroller.php", null, function(result) {
+             console.log(result)
 
-
-
-
-
-        //ajax call voor gegevens nu enkel nog munten en dranken
-        $.getJSON("ajaxcalls.php", {}, function(result) {
-
-            //referentie naar saldo
-            var saldo = result['saldo'];
-
-            console.log(result['saldo']['munten'])
-            for (var prop in result) {
-                console.log("propnaam" + prop + "\n" + $(this)[prop]);
-            }
             //opbouw weergave van munten
             for (var i in result['munten']) {
-                // console.log(result['munten'][i])
                 var $a = $('<a>');//href want krijgt onclick eventhandler
                 //toevoegen van link in geval dat javascript niet actief is
                 $a.attr('href', "automaatcontroller.php?action=steekgeldin&id=" + result['munten'][i].id)
-
                 var $div = $('<div>');
                 $div.addClass("muntdiv");
                 var $img = $('<img>');
@@ -194,31 +106,126 @@ Frisdrankautomaat
                 $a.append($div).insertBefore($('.muntenholder label'));
             }
 
-            /*    //opbouw voor dranken in drankautomaat
-             for (var i in result['dranken']) {
-             var $area = $('<area>')
-             $area.attr('title', result['dranken'][i].type).attr('shape', "rect").attr('coords', result['dranken'][i].coords).attr('href', "automaatcontroller.php?action=kopen&id=" + result['dranken'][i].id + "&prijs=" + result['dranken'][i].prijs + "&type=" + result['dranken'][i].type).appendTo($('map'));
-             }
-             $('#automaat').on('click', 'area', function(e) {
-             e.preventDefault();
-             //ajaxcall
-             })*/
-            $('.muntenholder').on('click', 'a', function(e) {
+            //opbouw voor dranken in drankautomaat
+            var leegholderHTML = '';
+            for (var i in result['dranken']) {
+                var $area = $('<area>')
+                $area.attr('id', result['dranken'][i].id).attr('class', 'drankknop').attr('prijs', result['dranken'][i].prijs).attr('title', result['dranken'][i].type).attr('name', result['dranken'][i].type).attr('shape', "rect").attr('coords', result['dranken'][i].coords).attr('href', "automaatcontroller.php?action=kopen&id=" + result['dranken'][i].id + "&prijs=" + result['dranken'][i].prijs + "&type=" + result['dranken'][i].type).appendTo($('map'));
+                if (result['dranken'][i].aantal == 0) {
+                    leegholderHTML += "<label class='leeg'>LEEG</label>"
+                }
+                else {
+                    leegholderHTML += "<label class='leeg'></label>"
+                }
+            }
 
-                e.preventDefault();
-                console.log(e.target.id)
+            $('.leegholder').html(leegholderHTML);
 
-//ajaxcall
+            //saldoweergave fresh start MISSCHIEN OVERBODIG ge begint by nul dus?
+            saldo = result['saldo'];
 
-                $.getJSON("ajaxcalls.php", "id=" + e.target.id, function(result) {
-                    //saldo vermeerderen waar id overeenkomt
-                    console.log(result);
-                })
-            })
 
+        }).done(function() {
+            console.log("automaat opgestart")
+        }).fail(function() {
+            console.log("automaat niet opgestart")
         });
     });//einde onload
 
+    $("#geldterug").click(function(e) {
+        console.log(applicationdata)
+        e.preventDefault();
+        for (var i in saldo.munten) {
+            saldo.munten[i] = 0;
+            $('#saldo').html("0.00");
+        }
+    })
 
+
+    //functionaliteit voor toevoegen van munten aan saldo 
+    $('.muntenholder').on('click', 'a', function(e) {
+        //verhinderen van navigatie op link    
+        e.preventDefault();
+        //saldo bijvoegen via javascript
+        console.log(applicationdata.responseJSON.saldo.munten);
+        for (var i in saldo.munten) {
+            if (i == e.target.id) {
+                saldo.munten[i] += 1;//saldo is passed by reference??
+                //
+                //applicationdata.responseJSON.saldo.munten[i]+=1
+            }
+        }
+        var totaalsaldo = berekenTotaalSaldo(saldo.munten);
+        $('#saldo').html(parseFloat(totaalsaldo / 100).toFixed(2));
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+//functionaliteit voor aankopen van drank
+    $('#automaat').on('click', '.drankknop', function(e) {
+        e.preventDefault();
+        console.log(applicationdata)
+        applicationdata.test="TEE4EST";
+        console.log(applicationdata)
+        applicationdata = $.ajax("ajaxcontroller.php", {
+            method:"get",
+            data: applicationdata.responseText,
+            dataType:"json"
+        })
+
+        console.log(applicationdata)
+
+        //$('#automaat').on('click', 'area', function(e) {
+        //ajaxcall
+      /*  $.getJSON("ajaxcontroller.php", "id=" + e.target.id + "&type=" + e.target.title + "&prijs=" + e.target.getAttribute('prijs'), function(result) {
+            console.log(result);
+            if (typeof result['error'] === 'undefined') {
+                // geen errors dus geldge aankoop   
+
+
+                $('<table id="teruggave" class="teruggave">').appendTo('body');
+                var teruggaveHTML = '';
+                for (var i in result['teruggave']) {
+                    teruggaveHTML += "<tr><td>" + result['teruggave'][i] + "</td><td>X</td><td><div class= 'muntdiv' ><img  class='muntimg' src= 'img/" + i + ".png'></div></td></tr>";
+                }
+                $('#teruggave').html(teruggaveHTML);
+                $("#canimgholder").html('<img src="img/' + result['dranktype'] + '.png">');
+            }
+            else {
+                ///errorhandling
+
+                //errorcode checken en dan de het overeenkomend bericht tonen
+                //errorcontainer aanmaken
+                for (var i in result['error']) {
+                    console.log(result['error'][i])
+                }
+                var errorHTML = '';
+                $('#errorholder').html(errorHTML);
+            }
+
+        })*/
+    });
+
+    $('#admintoegang').click(function() {
+        self.location.href = "adminlogin.php"
+    });
+//hulpfuncties
+
+    function berekenTotaalSaldo(saldo) {
+        var totaalsaldo = 0;
+        for (var i in saldo) {
+            totaalsaldo += i * saldo[i];
+        }
+        return totaalsaldo;
+    }
 </script>
 {%endblock%}

@@ -15,6 +15,12 @@ class AankoopService {
      * @param object $obj automaat object
      */
     public function verkoopDrank($oSaldo, $iPrijs, $iDrankid) {
+        
+        ///MISS eerst drank ophalen met de id dan hoeft de prijs niet meegegeven te worden als parameter
+        
+        
+        
+        
         //saldo munten in geldlade steken
         foreach ($oSaldo->getMunten() as $muntWaarde => $muntAantal) {
             if ($muntAantal > 0) {

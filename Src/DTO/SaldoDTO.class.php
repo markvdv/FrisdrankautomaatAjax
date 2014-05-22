@@ -6,7 +6,7 @@ namespace Src\DTO;
  * 
  */
 
-class SaldoDTO {
+class SaldoDTO implements \JsonSerializable{
 
     private $munten;
 
@@ -70,6 +70,10 @@ class SaldoDTO {
     }
     public function leegSaldo() {
         $this->__construct();
+    }
+    
+    public function jsonSerialize() {
+        return get_object_vars($this);
     }
 // </editor-fold>
 }
