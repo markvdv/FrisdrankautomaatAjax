@@ -212,8 +212,9 @@ header,footer{
 
 #canimgholder{
     position:relative;
-    bottom:390px;
+    bottom:400px;
     width:2em;
+   margin:auto;
 }
 .canimgholder img{
     border:none;

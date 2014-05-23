@@ -10,10 +10,9 @@ $classLoader->register();
 $classLoader->setFileExtension(".class.php"); // </editor-fold>
 
 session_start();
-$automaat = ApplicatieService::getApplicationData();
+$automaat = ApplicatieService::getApplicationData();//stdclass met de algemene data die wordt aangepast naargelang het saldo verandert
 
 if (!empty($_GET)) {
-    $automaat->test = "met get";
     $oSaldo = new SaldoDTO;
     $oSaldo->setMunten($_GET['saldo']['munten']);
     $return = ApplicatieService::verkoopFrisdrank($oSaldo, $_GET['aankoopdrankprijs'], $_GET['aankoopdrankid']);
