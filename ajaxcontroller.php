@@ -1,6 +1,7 @@
 <?php
 
 use Src\Business\ApplicatieService;
+use Src\DTO\SaldoDTO;
 use Doctrine\Common\ClassLoader;
 
 require_once ('Doctrine/Common/ClassLoader.php');
@@ -9,21 +10,23 @@ $classLoader->register();
 $classLoader->setFileExtension(".class.php"); // </editor-fold>
 
 session_start();
-
-if (empty($_GET)) {
     $automaat = ApplicatieService::getApplicationData();
-}
-else{
-   $data= json_decode($_GET);
-   
-   
-   
-   
-   $automaat= json_decode($_GET);
-}
 
 
-
+if (!empty($_GET)) {
+    //$automaat = json_decode($_GET);
+    //$automaat= new stdClass();
+    $automaat->test = "met get";
+    $oSaldo= new SaldoDTO;
+    $oSaldo->setMunten($_GET['saldo']['munten']);
+    $return = ApplicatieService::verkoopFrisdrank($oSaldo, $_GET['aankoopdrankprijs'], $_GET['aankoopdrankid']);
+    if (is_array($return)) {
+        $automaat->teruggave = $return;
+    } elseif (is_object($return)) {
+        $automaat->error = $return;
+    }
+} 
+//$automaat->return = $return;
 echo (json_encode($automaat));
 
 

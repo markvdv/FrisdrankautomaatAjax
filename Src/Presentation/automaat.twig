@@ -91,8 +91,6 @@ Frisdrankautomaat
     $(function() {//doc onload start
         //ajax call voor gegevens van de automaat
         applicationdata = $.getJSON("ajaxcontroller.php", null, function(result) {
-             console.log(result)
-
             //opbouw weergave van munten
             for (var i in result['munten']) {
                 var $a = $('<a>');//href want krijgt onclick eventhandler
@@ -133,7 +131,6 @@ Frisdrankautomaat
     });//einde onload
 
     $("#geldterug").click(function(e) {
-        console.log(applicationdata)
         e.preventDefault();
         for (var i in saldo.munten) {
             saldo.munten[i] = 0;
@@ -147,7 +144,6 @@ Frisdrankautomaat
         //verhinderen van navigatie op link    
         e.preventDefault();
         //saldo bijvoegen via javascript
-        console.log(applicationdata.responseJSON.saldo.munten);
         for (var i in saldo.munten) {
             if (i == e.target.id) {
                 saldo.munten[i] += 1;//saldo is passed by reference??
@@ -172,47 +168,62 @@ Frisdrankautomaat
 
 //functionaliteit voor aankopen van drank
     $('#automaat').on('click', '.drankknop', function(e) {
+        //console.log(applicationdata.responseText)
         e.preventDefault();
-        console.log(applicationdata)
-        applicationdata.test="TEE4EST";
-        console.log(applicationdata)
-        applicationdata = $.ajax("ajaxcontroller.php", {
-            method:"get",
-            data: applicationdata.responseText,
-            dataType:"json"
+        applicationdata.responseJSON.aankoopdrankid = e.target.id;
+        applicationdata.responseJSON.aankoopdrankprijs = e.target.getAttribute('prijs');
+        //$.getJSON("ajaxcontroller.php","saldo="+applicationdata.responseJSON.saldo+"&id="+applicationdata.responseJSON.aankoopdrankid+"&prijs="+applicationdata.responseJSON.aankoopdrankprijs,function(data) {
+        $.getJSON("ajaxcontroller.php",applicationdata.responseJSON,function(data) {
+            console.log("antwoord" + data);
+            $.each(data, function(key, val) {
+                console.log(key + " " + val);
+            })
+
+            if (typeof data['error'] === "undefined") {
+                //serviocelaag heeft geen rrors opgeworpen dus kunnen e verder
+                console.log(data)
+            }
+            else {
+                //errorafhandeling
+
+                $('#errorholder').data['error']
+            }
+        }).done(function() {
+            console.log('yay it worked')
+        }).fail(function() {
+            console.log('fk it failed')
         })
 
-        console.log(applicationdata)
 
         //$('#automaat').on('click', 'area', function(e) {
         //ajaxcall
-      /*  $.getJSON("ajaxcontroller.php", "id=" + e.target.id + "&type=" + e.target.title + "&prijs=" + e.target.getAttribute('prijs'), function(result) {
-            console.log(result);
-            if (typeof result['error'] === 'undefined') {
-                // geen errors dus geldge aankoop   
-
-
-                $('<table id="teruggave" class="teruggave">').appendTo('body');
-                var teruggaveHTML = '';
-                for (var i in result['teruggave']) {
-                    teruggaveHTML += "<tr><td>" + result['teruggave'][i] + "</td><td>X</td><td><div class= 'muntdiv' ><img  class='muntimg' src= 'img/" + i + ".png'></div></td></tr>";
-                }
-                $('#teruggave').html(teruggaveHTML);
-                $("#canimgholder").html('<img src="img/' + result['dranktype'] + '.png">');
-            }
-            else {
-                ///errorhandling
-
-                //errorcode checken en dan de het overeenkomend bericht tonen
-                //errorcontainer aanmaken
-                for (var i in result['error']) {
-                    console.log(result['error'][i])
-                }
-                var errorHTML = '';
-                $('#errorholder').html(errorHTML);
-            }
-
-        })*/
+        /*  $.getJSON("ajaxcontroller.php", "id=" + e.target.id + "&type=" + e.target.title + "&prijs=" + e.target.getAttribute('prijs'), function(result) {
+         console.log(result);
+         if (typeof result['error'] === 'undefined') {
+         // geen errors dus geldge aankoop   
+         
+         
+         $('<table id="teruggave" class="teruggave">').appendTo('body');
+         var teruggaveHTML = '';
+         for (var i in result['teruggave']) {
+         teruggaveHTML += "<tr><td>" + result['teruggave'][i] + "</td><td>X</td><td><div class= 'muntdiv' ><img  class='muntimg' src= 'img/" + i + ".png'></div></td></tr>";
+         }
+         $('#teruggave').html(teruggaveHTML);
+         $("#canimgholder").html('<img src="img/' + result['dranktype'] + '.png">');
+         }
+         else {
+         ///errorhandling
+         
+         //errorcode checken en dan de het overeenkomend bericht tonen
+         //errorcontainer aanmaken
+         for (var i in result['error']) {
+         console.log(result['error'][i])
+         }
+         var errorHTML = '';
+         $('#errorholder').html(errorHTML);
+         }
+         
+         })*/
     });
 
     $('#admintoegang').click(function() {
