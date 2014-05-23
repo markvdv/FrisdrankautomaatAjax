@@ -10,6 +10,11 @@ use Src\Exceptions\TeLaagSaldoException;
 use Src\Exceptions\GeenGeldException;
 
 class ApplicatieService {
+    /*      *getApplicationData
+     *: ophaalpunt voor ajaxcalls die alle nodige startdata klaarzet;
+     * 
+     * @return \stdClass
+     */
 
     public static function getApplicationData() {
         $automaat = new \stdClass();
@@ -19,9 +24,15 @@ class ApplicatieService {
         return $automaat;
     }
 
+    /*     * verkoopFrisdrank MISSCHIEN hernoemen?: verkoopt een frisdrank en update de database,
+     * 
+     * @param object $oSaldo
+     * @param int $iPrijs
+     * @param int $iDrankid
+     * @return \Src\Exceptions\TeLaagSaldoException|\Src\Exceptions\GeenGeldException|array van teruggave
+     */
+
     public static function verkoopFrisdrank($oSaldo, $iPrijs, $iDrankid) {
-
-
         try {
             $aTeruggave = AankoopService::verkoopDrank($oSaldo, $iPrijs, $iDrankid);
             return $aTeruggave;
@@ -33,10 +44,4 @@ class ApplicatieService {
         }
     }
 
-    /*  public static function schrijfGegevensWeg($obj) {
-      $drankenlijst = $obj->frisdranken;
-      FrisdrankService::UpdateDranken($drankenlijst);
-      $muntenlijst = $obj->munten;
-      MuntService::UpdateMunten($muntenlijst);
-      } */
 }
