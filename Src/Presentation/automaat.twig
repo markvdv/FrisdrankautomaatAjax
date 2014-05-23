@@ -55,25 +55,17 @@ Frisdrankautomaat
 
 
 
+<div id="canimgholder" class="canimgholder" ></div>
 
 
 
 <!-- errorrmsg -->
 <div id="errorholder"></div>
 
-            {% if error is defined %}
-                {% if error=="drankop" %}
-<p class="error">de drank die je koos is op</p>
-                {%elseif error=="telaagsaldo"%}
-<p class="error">niet genoeg geld ingegeven</p>
-                {%elseif error=="geenwisselgeld"%}
-<p class="error">niet genoeg wisselgeld! Gepast betalen!!!</p>
-                {% endif %}
-            {% endif %}
 
-<div id="canimgholder" class="canimgholder" ></div>
+
 <!-- teruggave overzicht -->
-
+<!-- <div class= "teruggave" ></div> -->
         {%endblock%}
 
 {% block scripts%}
@@ -86,7 +78,6 @@ Frisdrankautomaat
     //jsonAJAX leverancier in servicelaag
     //met jquery, javascript leverancier aanspreken
     // en gegevens tonen
-
 
     $(function() {//doc onload start
         //ajax call voor gegevens van de automaat
@@ -130,27 +121,30 @@ Frisdrankautomaat
         });
     });//einde onload
 
+
+//geldteruggave zonder aankoops
     $("#geldterug").click(function(e) {
         e.preventDefault();
-        for (var i in saldo.munten) {
-            saldo.munten[i] = 0;
-            $('#saldo').html("0.00");
-        }
+        $.each(saldo.munten, function(key) {
+            saldo.munten[key] = 0;
+        });
+        $('#saldo').html("0.00");
     })
 
 
     //functionaliteit voor toevoegen van munten aan saldo 
     $('.muntenholder').on('click', 'a', function(e) {
+        //verwijderen van mogelijk error messages
+        $('#errorholder').html('');
         //verhinderen van navigatie op link    
         e.preventDefault();
         //saldo bijvoegen via javascript
-        for (var i in saldo.munten) {
-            if (i == e.target.id) {
-                saldo.munten[i] += 1;//saldo is passed by reference??
-                //
-                //applicationdata.responseJSON.saldo.munten[i]+=1
+        $.each(saldo.munten, function(key) {
+            if (key == e.target.id) {
+                saldo.munten[key] += 1;
             }
-        }
+        });
+
         var totaalsaldo = berekenTotaalSaldo(saldo.munten);
         $('#saldo').html(parseFloat(totaalsaldo / 100).toFixed(2));
 
@@ -168,62 +162,52 @@ Frisdrankautomaat
 
 //functionaliteit voor aankopen van drank
     $('#automaat').on('click', '.drankknop', function(e) {
-        //console.log(applicationdata.responseText)
         e.preventDefault();
         applicationdata.responseJSON.aankoopdrankid = e.target.id;
         applicationdata.responseJSON.aankoopdrankprijs = e.target.getAttribute('prijs');
-        //$.getJSON("ajaxcontroller.php","saldo="+applicationdata.responseJSON.saldo+"&id="+applicationdata.responseJSON.aankoopdrankid+"&prijs="+applicationdata.responseJSON.aankoopdrankprijs,function(data) {
-        $.getJSON("ajaxcontroller.php",applicationdata.responseJSON,function(data) {
+        $.getJSON("ajaxcontroller.php", applicationdata.responseJSON, function(data) {
             console.log("antwoord" + data);
             $.each(data, function(key, val) {
                 console.log(key + " " + val);
             })
 
             if (typeof data['error'] === "undefined") {
+                $('#errorholder').html('');
                 //serviocelaag heeft geen rrors opgeworpen dus kunnen e verder
                 console.log(data)
+                $('<table id="teruggave" class="teruggave">').appendTo('body');
+                var teruggaveHTML = '';
+                for (var i in data['teruggave']) {
+                    teruggaveHTML += "<tr><td>" + data['teruggave'][i] + "</td><td>X</td><td><div class= 'muntdiv' ><img  class='muntimg' src= 'img/" + i + ".png'></div></td></tr>";
+                }
+                $('#teruggave').html(teruggaveHTML);
+                $('#saldo').html("0.00");
+             
+                $("#canimgholder").html('<img src="img/' +    e.target.getAttribute('name') + '.png">');
             }
+
             else {
                 //errorafhandeling
+                console.log(data['error'].code);
+                switch (data['error'].code) {
+                    case 0:
+                        var errorHTML = "<p class='error'>te weinig geld ingegeven</p>";
+                        break;
+                    case 1:
+                        var errorHTML = "<p class='error'>niet genoeg wisselgeld gepast betalen </p>";
+                        break;
+                    default://in het geval dat er geen code overeenkomt
+                        var errorHTML = "<p class='error'>" + data['error'].message + "</p>";
+                        break;
 
-                $('#errorholder').data['error']
+                }
+                $('#errorholder').html(errorHTML)
             }
         }).done(function() {
             console.log('yay it worked')
         }).fail(function() {
             console.log('fk it failed')
         })
-
-
-        //$('#automaat').on('click', 'area', function(e) {
-        //ajaxcall
-        /*  $.getJSON("ajaxcontroller.php", "id=" + e.target.id + "&type=" + e.target.title + "&prijs=" + e.target.getAttribute('prijs'), function(result) {
-         console.log(result);
-         if (typeof result['error'] === 'undefined') {
-         // geen errors dus geldge aankoop   
-         
-         
-         $('<table id="teruggave" class="teruggave">').appendTo('body');
-         var teruggaveHTML = '';
-         for (var i in result['teruggave']) {
-         teruggaveHTML += "<tr><td>" + result['teruggave'][i] + "</td><td>X</td><td><div class= 'muntdiv' ><img  class='muntimg' src= 'img/" + i + ".png'></div></td></tr>";
-         }
-         $('#teruggave').html(teruggaveHTML);
-         $("#canimgholder").html('<img src="img/' + result['dranktype'] + '.png">');
-         }
-         else {
-         ///errorhandling
-         
-         //errorcode checken en dan de het overeenkomend bericht tonen
-         //errorcontainer aanmaken
-         for (var i in result['error']) {
-         console.log(result['error'][i])
-         }
-         var errorHTML = '';
-         $('#errorholder').html(errorHTML);
-         }
-         
-         })*/
     });
 
     $('#admintoegang').click(function() {
