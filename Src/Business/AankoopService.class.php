@@ -2,9 +2,9 @@
 
 namespace Src\Business;
 
-use Src\DTO\SaldoDTO;
 use Src\Exceptions\TeLaagSaldoException;
 use Src\Exceptions\GeenGeldException;
+use Src\Exceptions\InvalidParameterException;
 
 class AankoopService {
 
@@ -14,17 +14,19 @@ class AankoopService {
      * @param integer $prijs
      * @param object $obj automaat object
      */
-    public function verkoopDrank($oSaldo, $iPrijs, $iDrankid) {
-        ///MISS eerst drank ophalen met de id dan hoeft de prijs niet meegegeven te worden als parameter
-        
+    public function verkoopDrank($oSaldo, $iDrankid) {
+        //checken 
+        $frisdrank=FrisdrankService::getFrisdrankById($iDrankid);
+        if ($frisdrank==null){
+            throw new InvalidParameterException("ongeldige parameter",2);
+        }
         //check of er genoeg geld is ingeven om een drank aan te kopen
         $totaalSaldo = $oSaldo->geefTotaalSaldo();
-        if ($totaalSaldo < $iPrijs) {
+        if ($totaalSaldo < $frisdrank->getPrijs()) {
             throw new TeLaagSaldoException("niet genoeg geld ingegeven",0);
         }
-        
        //check of er genoeg geld is om weer te geven 
-        $teruggaveBedrag = $totaalSaldo - $iPrijs;
+        $teruggaveBedrag = $totaalSaldo -  $frisdrank->getPrijs();
        $totaalGeld = MuntService::berekenTotaalInGeldLade();
         if ($totaalGeld < $teruggaveBedrag) {
             throw new GeenGeldException("niet genoeg geld om weer te geven",1);

@@ -43,5 +43,9 @@ class FrisdrankService {
     public static function vulFrisdrankenBij() {
         FrisdrankDAO::update(self::$maximumDrankAantal);
     }
-
+    public static function getFrisdrankById($frisdrankid) {
+        $frisdrank=FrisdrankDAO::getById($frisdrankid);
+        return $frisdrank;
+        
+    }
 }

@@ -3,17 +3,7 @@
 // en gegevens tonen
 
 $(function() {//doc onload start
-
-
-
-
-
-
-    //ajax call voor gegevens van de automaat
-    //variabele met jqxhrobject
-    //applicationdata = $.getJSON("ajaxcontroller.php", null, function(result) {
-
-    applicationdata = $.getJSON("ajaxcontroller.php", null, function(result) {
+    $.getJSON("ajaxcontroller.php", null, function(result) {
 
         //opbouw weergave van munten
         for (var i in result['munten']) {
@@ -31,30 +21,23 @@ $(function() {//doc onload start
 
         //opbouw voor dranken in drankautomaat
         var leegholderHTML = '';
-        for (var i in result['dranken']) {
+
+
+        $.each(result['dranken'], function(key) {
             var $area = $('<area>')
-            $area.attr('id', result['dranken'][i].id).attr('class', 'drankknop').attr('prijs', result['dranken'][i].prijs).attr('title', result['dranken'][i].type).attr('name', result['dranken'][i].type).attr('shape', "rect").attr('coords', result['dranken'][i].coords).attr('href', "automaatcontroller.php?action=kopen&id=" + result['dranken'][i].id + "&prijs=" + result['dranken'][i].prijs + "&type=" + result['dranken'][i].type).appendTo($('map'));
-            if (result['dranken'][i].aantal == 0) {
+            $area.attr('id', result['dranken'][key].id).attr('class', 'drankknop').attr('prijs', result['dranken'][key].prijs).attr('title', result['dranken'][key].type).attr('name', result['dranken'][key].type).attr('shape', "rect").attr('coords', result['dranken'][key].coords).attr('href', "automaatcontroller.php?action=kopen&id=" + result['dranken'][key].id + "&prijs=" + result['dranken'][key].prijs + "&type=" + result['dranken'][key].type).appendTo($('map'));
+            if (result['dranken'][key].aantal === '0') {
                 leegholderHTML += "<label class='leeg'>LEEG</label>"
             }
             else {
                 leegholderHTML += "<label class='leeg'></label>"
             }
-        }
-
+        })
+        //leeglabels
         $('.leegholder').html(leegholderHTML);
-
-        saldo = result['saldo'];
-    })
-
-
-
-
-
-
-
-
-
+        //saldolabel
+        $('#saldo').html(parseFloat(result['totaalsaldo'] / 100).toFixed(2));
+    });
 
 });//einde onload
 
@@ -62,10 +45,12 @@ $(function() {//doc onload start
 //geldteruggave zonder aankoops
 $("#geldterug").click(function(e) {
     e.preventDefault();
-    $.each(saldo.munten, function(key) {
-        saldo.munten[key] = 0;
-    });
-    $('#saldo').html("0.00");
+    $.getJSON("ajaxcontroller.php", {action: "geldterug"}, function(result) {
+        //saldo label updaten
+        $('#saldo').html(parseFloat(result['totaalsaldo'] / 100).toFixed(2));
+
+    })
+    $('#saldo').html(parseFloat(result['totaalsaldo'] / 100).toFixed(2));
 })
 
 
@@ -75,34 +60,22 @@ $('.muntenholder').on('click', 'a', function(e) {
     $('#errorholder').html('');
     //verhinderen van navigatie op link    
     e.preventDefault();
-    //saldo bijvoegen via javascript
-    $.each(saldo.munten, function(key) {
-        if (key == e.target.id) {
-            saldo.munten[key] += 1;
-        }
-    });
+    //naar AJAXcall voor saldo te veranderen
+    $.getJSON("ajaxcontroller.php", {action: "steekgeldin", id: e.target.id}, function(result) {
+        //saldo label updaten
+        $('#saldo').html(parseFloat(result['totaalsaldo'] / 100).toFixed(2));
 
-    var totaalsaldo = berekenTotaalSaldo(saldo.munten);
-    $('#saldo').html(parseFloat(totaalsaldo / 100).toFixed(2));
+    })
 
 });
-
-
-
-
-
-
-
-
-
 
 
 //functionaliteit voor aankopen van drank
 $('#automaat').on('click', '.drankknop', function(e) {
     e.preventDefault();
-    applicationdata.responseJSON.aankoopdrankid = e.target.id;
-    applicationdata.responseJSON.aankoopdrankprijs = e.target.getAttribute('prijs');
-    $.getJSON("ajaxcontroller.php", applicationdata.responseJSON, function(data) {
+    // applicationdata.responseJSON.aankoopdrankid = e.target.id;
+    //applicationdata.responseJSON.aankoopdrankprijs = e.target.getAttribute('prijs');
+    $.getJSON("ajaxcontroller.php", {action: "aankoop", drankid: e.target.id}, function(data) {
 
         if (typeof data['error'] === "undefined") {
             $('#errorholder').html('');
@@ -128,6 +101,10 @@ $('#automaat').on('click', '.drankknop', function(e) {
                 case 1:
                     var errorHTML = "<p class='error'>niet genoeg wisselgeld gepast betalen </p>";
                     break;
+                case 2:
+                    var errorHTML = "<p class='error'>ongeldige parameter</p>";
+                    break;
+
                 default://in het geval dat er geen code overeenkomt
                     var errorHTML = "<p class='error'>" + data['error'].message + "</p>";
                     break;
@@ -145,13 +122,3 @@ $('#admintoegang').click(function() {
 
 
 
-
-//hulpfuncties
-
-function berekenTotaalSaldo(saldo) {
-    var totaalsaldo = 0;
-    for (var i in saldo) {
-        totaalsaldo += i * saldo[i];
-    }
-    return totaalsaldo;
-}
