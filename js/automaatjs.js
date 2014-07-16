@@ -4,7 +4,7 @@
 
 $(function() {//doc onload start
     $.getJSON("ajaxcontroller.php", null, function(result) {
-
+//console.log(result);
         //opbouw weergave van munten
         for (var i in result['munten']) {
             var $a = $('<a>');//href want krijgt onclick eventhandler
@@ -21,8 +21,6 @@ $(function() {//doc onload start
 
         //opbouw voor dranken in drankautomaat
         var leegholderHTML = '';
-
-
         $.each(result['dranken'], function(key) {
             var $area = $('<area>')
             $area.attr('id', result['dranken'][key].id).attr('class', 'drankknop').attr('prijs', result['dranken'][key].prijs).attr('title', result['dranken'][key].type).attr('name', result['dranken'][key].type).attr('shape', "rect").attr('coords', result['dranken'][key].coords).attr('href', "automaatcontroller.php?action=kopen&id=" + result['dranken'][key].id + "&prijs=" + result['dranken'][key].prijs + "&type=" + result['dranken'][key].type).appendTo($('map'));
